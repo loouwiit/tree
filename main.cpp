@@ -4,16 +4,17 @@
 #include "circle.hpp"
 #include "camara.hpp"
 
-#include <iostream>
+#include <fstream>
 
 int main();
+int importConfiguration();
 void movement(float deltaTime);
 void key(sf::Event::KeyEvent key, bool press);
 void mouse(sf::Event::MouseMoveEvent mouse);
 
 sf::RenderWindow window(sf::VideoMode(512, 256), "tree");
 
-Circle circle{ 10000, 10, 1, 10, 1, 2 * M_PI / 30 , 0 };
+std::vector<Circle> circle{};
 Camara camara{};
 
 float moveSensitivity = 40.0f;
@@ -25,6 +26,8 @@ int main()
 {
 	srand(time(nullptr));
 	camara.setPosition({ 0, 0, 100 });
+
+	importConfiguration();
 
 	sf::Clock clock{};
 
@@ -71,15 +74,41 @@ int main()
 
 		sf::Time elapsed = clock.restart();
 		movement(elapsed.asSeconds());
-		circle.update(elapsed.asSeconds());
-		circle.render(camara);
+		for (auto& i : circle)
+		{
+			i.update(elapsed.asSeconds());
+			i.render(camara);
+		}
 
 		window.clear();
-		window.draw(circle);
+		for (auto& i : circle)
+			window.draw(i);
 		window.display();
 	}
 
 	return 0;
+}
+
+int importConfiguration()
+{
+	std::ifstream file{ "configuration.txt" };
+	if (!file.is_open()) return 0;
+	circle.clear();
+	while (file.peek() != EOF)
+	{
+		unsigned count;
+		float radius;
+		float radiusSD;
+		float hight;
+		float hightSD;
+		float palstance;
+		float palstanceSD;
+		file >> count >> radius >> radiusSD >> hight >> hightSD >> palstance >> palstanceSD;
+		file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		if (count > 0) circle.push_back({ count, radius, radiusSD, hight, hightSD, palstance , palstanceSD });
+	}
+
+	return circle.size();
 }
 
 void movement(float deltaTime)

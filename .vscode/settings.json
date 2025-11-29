@@ -54,6 +54,7 @@
 		"variant": "cpp",
 		"expected": "cpp",
 		"format": "cpp",
-		"iostream": "cpp"
+		"iostream": "cpp",
+		"fstream": "cpp"
 	}
 }
