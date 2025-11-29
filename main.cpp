@@ -98,6 +98,14 @@ int importConfiguration()
 	circle.clear();
 	while (file.peek() != EOF)
 	{
+		if (file.peek() == '#')
+		{
+			file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			while (std::isspace(file.peek()))
+				file.ignore();
+			continue;
+		}
+
 		unsigned count;
 		float radius;
 		float radiusSD;
@@ -109,6 +117,9 @@ int importConfiguration()
 		file >> std::dec >> count >> radius >> radiusSD >> hight >> hightSD >> palstance >> palstanceSD >> std::hex >> color;
 		file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		if (count > 0) circle.push_back({ count, radius, radiusSD, hight, hightSD, palstance , palstanceSD, sf::Color{color} });
+
+		while (std::isspace(file.peek()))
+			file.ignore();
 	}
 
 	return circle.size();
