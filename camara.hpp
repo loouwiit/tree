@@ -42,17 +42,17 @@ public:
 
 	sf::Vector3f getFront() const
 	{
-		return innerRotator.matrix[2];
+		return -innerRotator.matrix[2];
 	}
 
 	sf::Vector3f getLeft() const
 	{
-		return innerRotator.matrix[0];
+		return -innerRotator.matrix[0];
 	}
 
 	sf::Vector3f getUp() const
 	{
-		return innerRotator.matrix[1];
+		return -innerRotator.matrix[1];
 	}
 
 	auto operator()(sf::Vector3f point) const

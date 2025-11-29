@@ -24,11 +24,11 @@ sf::Vector2f mousePosition{};
 int main()
 {
 	srand(time(nullptr));
-	camara.setPosition({ 40, 0, 00 });
+	camara.setPosition({ 0, 0, 100 });
 
 	sf::Clock clock{};
 
-	window.setView(sf::View{ sf::Vector2f{ 0, 0 }, {(float)window.getSize().x / (float)window.getSize().y, 1.0f} });
+	window.setView(sf::View{ sf::Vector2f{ 0, 0 }, {(float)window.getSize().x / (float)window.getSize().y, -1.0f} });
 	window.setVerticalSyncEnabled(true);
 
 	while (window.isOpen())
@@ -46,7 +46,7 @@ int main()
 			}
 			case Event::Resized:
 			{
-				window.setView(sf::View{ sf::Vector2f{ 0, 0 }, { (float)event.size.width / (float)event.size.height, 1.0f } });
+				window.setView(sf::View{ sf::Vector2f{ 0, 0 }, { (float)event.size.width / (float)event.size.height, -1.0f } });
 				break;
 			}
 			case Event::KeyPressed:

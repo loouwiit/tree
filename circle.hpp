@@ -47,7 +47,7 @@ public:
 			auto position = camara(point[i].getPosition());
 			vertex[i].position.x = position.x / -position.z;
 			vertex[i].position.y = position.y / -position.z;
-			vertex[i].color.a = position.z > 0 ? 0xFF : 0;
+			vertex[i].color.a = position.z < 0 ? 0xFF : 0;
 		}
 		return *this;
 	}
