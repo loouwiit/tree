@@ -7,6 +7,7 @@
 #include <iostream>
 
 int main();
+void movement(float deltaTime);
 void key(sf::Event::KeyEvent key, bool press);
 void mouse(sf::Event::MouseMoveEvent mouse);
 
@@ -15,7 +16,7 @@ sf::RenderWindow window(sf::VideoMode(512, 256), "tree");
 Circle circle{ 10000, 10, 1, 10, 1, 2 * M_PI / 30 , 0 };
 Camara camara{};
 
-float moveSensitivity = 1.0f;
+float moveSensitivity = 40.0f;
 float camaraSensitivity = 1.0f;
 
 sf::Vector2f mousePosition{};
@@ -69,6 +70,7 @@ int main()
 		}
 
 		sf::Time elapsed = clock.restart();
+		movement(elapsed.asSeconds());
 		circle.update(elapsed.asSeconds());
 		circle.render(camara);
 
@@ -80,6 +82,59 @@ int main()
 	return 0;
 }
 
+void movement(float deltaTime)
+{
+	using Key = sf::Keyboard;
+	if (Key::isKeyPressed(Key::W))
+	{
+		auto position = camara.getPosition();
+		position += camara.getFront() * moveSensitivity * deltaTime;
+		camara.setPosition(position);
+	}
+	if (Key::isKeyPressed(Key::S))
+	{
+		auto position = camara.getPosition();
+		position -= camara.getFront() * moveSensitivity * deltaTime;
+		camara.setPosition(position);
+	}
+	if (Key::isKeyPressed(Key::A))
+	{
+		auto position = camara.getPosition();
+		position += camara.getLeft() * moveSensitivity * deltaTime;
+		camara.setPosition(position);
+	}
+	if (Key::isKeyPressed(Key::D))
+	{
+		auto position = camara.getPosition();
+		position -= camara.getLeft() * moveSensitivity * deltaTime;
+		camara.setPosition(position);
+	}
+	if (Key::isKeyPressed(Key::R))
+	{
+		auto position = camara.getPosition();
+		position += camara.getUp() * moveSensitivity * deltaTime;
+		camara.setPosition(position);
+	}
+	if (Key::isKeyPressed(Key::F))
+	{
+		auto position = camara.getPosition();
+		position -= camara.getUp() * moveSensitivity * deltaTime;
+		camara.setPosition(position);
+	}
+	if (Key::isKeyPressed(Key::Space))
+	{
+		auto position = camara.getPosition();
+		position.y += moveSensitivity * deltaTime;
+		camara.setPosition(position);
+	}
+	if (Key::isKeyPressed(Key::LShift))
+	{
+		auto position = camara.getPosition();
+		position.y -= moveSensitivity * deltaTime;
+		camara.setPosition(position);
+	}
+}
+
 void key(sf::Event::KeyEvent key, bool press)
 {
 	using Key = sf::Keyboard;
@@ -88,48 +143,6 @@ void key(sf::Event::KeyEvent key, bool press)
 	case Key::Escape:
 	{
 		window.close();
-		break;
-	}
-	case Key::W:
-	{
-		auto position = camara.getPosition();
-		position += camara.getFront() * moveSensitivity;
-		camara.setPosition(position);
-		break;
-	}
-	case Key::S:
-	{
-		auto position = camara.getPosition();
-		position -= camara.getFront() * moveSensitivity;
-		camara.setPosition(position);
-		break;
-	}
-	case Key::A:
-	{
-		auto position = camara.getPosition();
-		position += camara.getLeft() * moveSensitivity;
-		camara.setPosition(position);
-		break;
-	}
-	case Key::D:
-	{
-		auto position = camara.getPosition();
-		position -= camara.getLeft() * moveSensitivity;
-		camara.setPosition(position);
-		break;
-	}
-	case Key::R:
-	{
-		auto position = camara.getPosition();
-		position += camara.getUp() * moveSensitivity;
-		camara.setPosition(position);
-		break;
-	}
-	case Key::F:
-	{
-		auto position = camara.getPosition();
-		position -= camara.getUp() * moveSensitivity;
-		camara.setPosition(position);
 		break;
 	}
 
