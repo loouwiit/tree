@@ -25,7 +25,8 @@ sf::Vector2f mousePosition{};
 int main()
 {
 	srand(time(nullptr));
-	camara.setPosition({ 0, 0, 100 });
+	camara.setPosition({ 0.0f, 30.0f, 100.0f });
+	camara.setPitch(0.1f);
 
 	importConfiguration();
 
@@ -33,6 +34,7 @@ int main()
 
 	window.setView(sf::View{ sf::Vector2f{ 0, 0 }, {(float)window.getSize().x / (float)window.getSize().y, -1.0f} });
 	window.setVerticalSyncEnabled(true);
+	mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition());
 
 	while (window.isOpen())
 	{
