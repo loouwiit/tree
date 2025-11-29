@@ -10,7 +10,7 @@ class Circle : public sf::Drawable
 {
 public:
 	Circle() = default;
-	Circle(unsigned count, float radius, float radiusSD, float hight, float hightSD, float palstance, float palstanceSD, sf::Color color) : pointCount{ count }, vertex(sf::Points, count)
+	Circle(unsigned count, float radius, float radiusSD, float hight, float hightSD, float palstance, float palstanceSD, sf::Color color) : pointCount{ count }, vertex(sf::Triangles, 4 * 3 * count)
 	{
 		delete[]point;
 		point = new Point[count];
@@ -28,9 +28,11 @@ public:
 			point[i].radius = radiusDistribution(gen);
 			point[i].hight = hightDistribution(gen);
 			point[i].palstance = palstanceDistribution(gen);
-
-			vertex[i].color = color;
 		}
+
+		auto vertexCount = 4 * 3 * count;
+		for (unsigned i = 0; i < vertexCount; i++)
+			vertex[i].color = color;
 	}
 
 	auto& update(float deltaTime)
@@ -47,9 +49,8 @@ public:
 		for (unsigned i = 0; i < pointCount; i++)
 		{
 			auto position = camara(point[i].getPosition());
-			vertex[i].position.x = position.x / -position.z;
-			vertex[i].position.y = position.y / -position.z;
-			vertex[i].color.a = position.z < 0 ? 0xFF : 0;
+			auto zFactor = -1 / position.z;
+			setVertexs(i, { position.x * zFactor, position.y * zFactor }, std::min(std::max(0.05f, 4.0f * zFactor), 0.4f), zFactor > 0 ? 0xFF : 0x00);
 		}
 		return *this;
 	}
@@ -63,5 +64,49 @@ private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(vertex, states);
+	}
+
+	void setVertexs(unsigned index, sf::Vector2f position, float size, sf::Uint8 alpha)
+	{
+		index *= 4 * 3; // offset to it
+
+		constexpr float DefaultSize = 0.02f;
+
+		const sf::Vector2f hexagon[6] = {
+			{std::cos(M_PIf / 3 * 0) * size * DefaultSize, std::sin(M_PIf / 3 * 0) * size * DefaultSize},
+			{std::cos(M_PIf / 3 * 1) * size * DefaultSize, std::sin(M_PIf / 3 * 1) * size * DefaultSize},
+			{std::cos(M_PIf / 3 * 2) * size * DefaultSize, std::sin(M_PIf / 3 * 2) * size * DefaultSize},
+			{std::cos(M_PIf / 3 * 3) * size * DefaultSize, std::sin(M_PIf / 3 * 3) * size * DefaultSize},
+			{std::cos(M_PIf / 3 * 4) * size * DefaultSize, std::sin(M_PIf / 3 * 4) * size * DefaultSize},
+			{std::cos(M_PIf / 3 * 5) * size * DefaultSize, std::sin(M_PIf / 3 * 5) * size * DefaultSize},
+		};
+
+		vertex[index + 0 * 3 + 0].position = position + hexagon[0];
+		vertex[index + 0 * 3 + 1].position = position + hexagon[1];
+		vertex[index + 0 * 3 + 2].position = position + hexagon[5];
+		vertex[index + 0 * 3 + 0].color.a = alpha;
+		vertex[index + 0 * 3 + 1].color.a = alpha;
+		vertex[index + 0 * 3 + 2].color.a = alpha;
+
+		vertex[index + 1 * 3 + 0].position = position + hexagon[1];
+		vertex[index + 1 * 3 + 1].position = position + hexagon[2];
+		vertex[index + 1 * 3 + 2].position = position + hexagon[5];
+		vertex[index + 1 * 3 + 0].color.a = alpha;
+		vertex[index + 1 * 3 + 1].color.a = alpha;
+		vertex[index + 1 * 3 + 2].color.a = alpha;
+
+		vertex[index + 2 * 3 + 0].position = position + hexagon[2];
+		vertex[index + 2 * 3 + 1].position = position + hexagon[4];
+		vertex[index + 2 * 3 + 2].position = position + hexagon[5];
+		vertex[index + 2 * 3 + 0].color.a = alpha;
+		vertex[index + 2 * 3 + 1].color.a = alpha;
+		vertex[index + 2 * 3 + 2].color.a = alpha;
+
+		vertex[index + 3 * 3 + 0].position = position + hexagon[2];
+		vertex[index + 3 * 3 + 1].position = position + hexagon[3];
+		vertex[index + 3 * 3 + 2].position = position + hexagon[4];
+		vertex[index + 3 * 3 + 0].color.a = alpha;
+		vertex[index + 3 * 3 + 1].color.a = alpha;
+		vertex[index + 3 * 3 + 2].color.a = alpha;
 	}
 };
