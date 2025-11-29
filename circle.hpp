@@ -50,7 +50,8 @@ public:
 		{
 			auto position = camara(point[i].getPosition());
 			auto zFactor = -1 / position.z;
-			setVertexs(i, { position.x * zFactor, position.y * zFactor }, std::min(std::max(0.05f, 4.0f * zFactor), 0.4f), zFactor > 0 ? 0xFF : 0x00);
+			auto size = range(0.00f, 4.0f * zFactor, 1.0f);
+			setVertexs(i, { position.x * zFactor, position.y * zFactor }, size, zFactor > 0 ? 0xFF : 0x00);
 		}
 		return *this;
 	}
@@ -109,4 +110,7 @@ private:
 		vertex[index + 3 * 3 + 1].color.a = alpha;
 		vertex[index + 3 * 3 + 2].color.a = alpha;
 	}
+
+	template <class T>
+	constexpr static T range(T min, T value, T max) { return value < min ? min : (value > max ? max : value); }
 };
