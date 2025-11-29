@@ -10,7 +10,7 @@ class Circle : public sf::Drawable, public sf::Transformable
 {
 public:
 	Circle() = default;
-	Circle(unsigned count, float radius, float radiusSD, float hight, float hightSD, float palstance, float palstanceSD) : pointCount{ count }, vertex(sf::Points, count)
+	Circle(unsigned count, float radius, float radiusSD, float hight, float hightSD, float palstance, float palstanceSD, sf::Color color) : pointCount{ count }, vertex(sf::Points, count)
 	{
 		delete[]point;
 		point = new Point[count];
@@ -28,6 +28,8 @@ public:
 			point[i].radius = radiusDistribution(gen);
 			point[i].hight = hightDistribution(gen);
 			point[i].palstance = palstanceDistribution(gen);
+
+			vertex[i].color = color;
 		}
 	}
 

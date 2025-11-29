@@ -103,9 +103,10 @@ int importConfiguration()
 		float hightSD;
 		float palstance;
 		float palstanceSD;
-		file >> count >> radius >> radiusSD >> hight >> hightSD >> palstance >> palstanceSD;
+		sf::Uint32 color;
+		file >> std::dec >> count >> radius >> radiusSD >> hight >> hightSD >> palstance >> palstanceSD >> std::hex >> color;
 		file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		if (count > 0) circle.push_back({ count, radius, radiusSD, hight, hightSD, palstance , palstanceSD });
+		if (count > 0) circle.push_back({ count, radius, radiusSD, hight, hightSD, palstance , palstanceSD, sf::Color{color} });
 	}
 
 	return circle.size();
