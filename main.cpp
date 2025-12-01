@@ -34,7 +34,6 @@ int main()
 
 	window.setView(sf::View{ sf::Vector2f{ 0, 0 }, {(float)window.getSize().x / (float)window.getSize().y, -1.0f} });
 	window.setVerticalSyncEnabled(true);
-	mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition());
 
 	while (window.isOpen())
 	{
@@ -67,6 +66,11 @@ int main()
 			case Event::MouseMoved:
 			{
 				mouse(event.mouseMove);
+				break;
+			}
+			case Event::MouseButtonPressed:
+			{
+				mousePosition = window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
 				break;
 			}
 			default:
