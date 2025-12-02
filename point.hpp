@@ -12,6 +12,8 @@ public:
 
 	float palstance = 0.0f; // 角频率
 
+	sf::Color color{};
+
 	auto& update(float deltaTime)
 	{
 		angel += palstance * deltaTime;

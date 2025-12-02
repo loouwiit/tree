@@ -8,6 +8,7 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${workspaceFolder}/main.cpp",
+                "${workspaceFolder}/circle.cpp",
                 "-lsfml-graphics",
                 "-lsfml-window",
                 "-lsfml-system",
