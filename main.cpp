@@ -78,11 +78,11 @@ int main()
 			}
 		}
 
-		sf::Time elapsed = clock.restart();
-		movement(elapsed.asSeconds());
+		float deltaTime = clock.restart().asSeconds();
+		movement(deltaTime);
 		for (auto& i : circle)
 		{
-			i.update(elapsed.asSeconds());
+			i.update(deltaTime);
 			i.render(camara);
 		}
 
