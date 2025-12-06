@@ -75,8 +75,8 @@ private:
 
 	sf::VertexArray vertex{};
 
-	static const std::random_device randomDevice;
-	std::mt19937 rand{};
+	static std::random_device randomDevice;
+	std::mt19937 rand{ randomDevice() };
 	std::normal_distribution<float> normalDistribution{ 0,1 };
 
 	sf::Time colorChangeTime = sf::milliseconds(100);
