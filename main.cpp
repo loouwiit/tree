@@ -5,6 +5,8 @@
 #include "camara.hpp"
 
 #include <fstream>
+#include <thread>
+#include <unistd.h>
 
 int main();
 int importConfiguration();
@@ -22,6 +24,12 @@ float camaraSensitivity = 1.0f;
 
 sf::Vector2f mousePosition{};
 
+constexpr auto ThreadCount = 16;
+std::thread coThreads[ThreadCount]{};
+Circle* coThreadDeal[ThreadCount]{};
+bool running = true;
+float deltaTime = 0;
+
 int main()
 {
 	srand(time(nullptr));
@@ -29,6 +37,11 @@ int main()
 	camara.setPitch(0.1f);
 
 	importConfiguration();
+	for (auto i = 0; i < ThreadCount; i++)
+	{
+		void coThreadMain(int id);
+		coThreads[i] = std::thread{ coThreadMain, i };
+	}
 
 	sf::Clock clock{};
 
@@ -78,12 +91,27 @@ int main()
 			}
 		}
 
-		float deltaTime = clock.restart().asSeconds();
+		deltaTime = clock.restart().asSeconds();
 		movement(deltaTime);
-		for (auto& i : circle)
 		{
-			i.update(deltaTime);
-			i.render(camara);
+			auto id = 0;
+			for (auto& i : circle)
+			{
+				auto count = ThreadCount;
+				while (coThreadDeal[id] != nullptr)
+				{
+					id++;
+					id = id % ThreadCount;
+					if (--count == 0)
+					{
+						count = ThreadCount;
+						usleep(10);
+					}
+				}
+				coThreadDeal[id] = &i;
+				id++;
+				id = id % ThreadCount;
+			}
 		}
 
 		window.clear();
@@ -92,7 +120,29 @@ int main()
 		window.display();
 	}
 
+	running = false;
+	for (auto i = 0; i < ThreadCount; i++)
+	{
+		coThreadDeal[i] = (Circle*)-1;
+	}
+	for (auto& i : coThreads)
+		i.join();
+
 	return 0;
+}
+
+void coThreadMain(int id)
+{
+	Circle* circle = nullptr;
+	while (running)
+	{
+		while ((circle = coThreadDeal[id]) == nullptr) usleep(1000);
+		if (!running) return;
+		circle->update(deltaTime);
+		circle->render(camara);
+		coThreadDeal[id] = nullptr;
+		if (!running) return;
+	}
 }
 
 int importConfiguration()
